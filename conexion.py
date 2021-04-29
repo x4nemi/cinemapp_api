@@ -44,3 +44,14 @@ def crear_usuarios(correo, contrasenia):
 
         bd.commit()
         return True
+
+def iniciar_sesion(correo, contrasenia):
+    h = hashlib.new("sha256", bytes(contrasenia, "utf-8")) 
+    h = h.hexdigest() #cadena
+    query = "SELECT id FROM usuario WHERE correo = %s AND contrasenia = %s"
+    cursor.execute(query, (correo, h))
+    identificacion = cursor.fetchone()
+    if identificacion:
+        return identificacion[0], True
+    else:
+        return None, False

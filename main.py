@@ -1,14 +1,14 @@
 from flask import Flask, jsonify, request
 
-from conexion import crear_usuarios, iniciar_sesion
+from conexion import crear_usuarios, get_peliculas_usuario, iniciar_sesion
 from conexion import insertar_pelicula, get_peliculas, get_pelicula
-from conexion import modificar_pelicula, eliminar_pelicula
-from conexion import get_peliculas_usuario
+from conexion import modificar_pelicula, eliminar_pelicula, get_peliculas_usuario
 
 app = Flask(__name__)
 
 @app.route("/api/v1/usuarios", methods = ["POST"])
-def usuario():
+@app.route("/api/v1/usuarios/<int:id>/peliculas", methods = ["GET"])
+def usuario(id = None):
     if request.method == "POST" and request.is_json:
         try:
             data = request.get_json()
@@ -20,6 +20,8 @@ def usuario():
                 return jsonify({"code": "existe"})
         except:
             return jsonify({"code": "error"})
+    elif request.method == "GET" and id is not None:
+        return jsonify(get_peliculas_usuario(id))
 
 @app.route("/api/v1/sesiones", methods = ["POST"])
 def sesion():
